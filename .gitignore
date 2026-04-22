@@ -1,0 +1,16 @@
+# MATLAB editor and runtime artifacts
+*.asv
+*.m~
+*.mlx.lock
+slprj/
+
+# OS / editor clutter
+Thumbs.db
+Desktop.ini
+
+# Local archival material not meant for GitHub
+archive/
+
+# Reproducible generated outputs
+results/analysis_outputs.mat
+

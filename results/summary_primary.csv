@@ -1,0 +1,5 @@
+Strategy,Strategy_Description,Band,EEG_Channel,Band_Limits_Hz_1,Band_Limits_Hz_2,NumEpochs,PeakCoherence,PeakFreq_Hz,MeanCoherence,AUC_Coherence
+primary,Delta/theta/beta from F4C4; alpha from posterior channel when available.,delta,F4C4,0.5,4,150,0.531127311249008,0.0859375,0.167323119791808,0.0214240586063197
+primary,Delta/theta/beta from F4C4; alpha from posterior channel when available.,theta,F4C4,4,8,150,0.402572538789137,0.060546875,0.133485913804924,0.0169314910776302
+primary,Delta/theta/beta from F4C4; alpha from posterior channel when available.,alpha,P3O1,8,13,150,0.481217044276945,0.09765625,0.191339625650751,0.0242767648879165
+primary,Delta/theta/beta from F4C4; alpha from posterior channel when available.,beta,F4C4,13,30,150,0.504828202033678,0.068359375,0.239811555000292,0.0304908766821621
