@@ -1,41 +1,45 @@
 # Multi-Band EEG Power Variability and Coherence with BFV2
 
-This repository is a compact MATLAB analysis project for studying whether slow fluctuations in EEG band power covary with slow fluctuations in cerebral blood flow velocity (`BFV2`).
+Compact MATLAB analysis of EEG band-power variability and its low-frequency coherence with cerebral blood flow velocity (`BFV2`).
 
-The project is intentionally positioned as an exploratory signal-processing study, not as a finished biomarker claim. Its strongest value is that it now runs reproducibly from the repository root, exports structured outputs, and includes a same-channel control analysis to reduce over-interpretation of band comparisons.
+The repository studies whether slow fluctuations in EEG band power show frequency-domain association with slow fluctuations in `BFV2` within a single physiological recording. It is structured as a reproducible exploratory analysis rather than a large software framework.
 
-## Why this project is worth keeping
+## Project overview
 
-- The underlying question is scientifically reasonable: do slow EEG band-power fluctuations align with slow BFV oscillations?
-- The dataset supports more than a single delta-band script because it contains multiple EEG channels (`F4C4`, `P3O1`, `P4O2`) plus `BFV2`.
-- The repo is small enough to stay readable, but rich enough to demonstrate signal-processing judgment, reproducibility, and honest methodological framing.
+The dataset includes:
 
-## What the pipeline now does
+- `F4C4`: frontal EEG channel
+- `P3O1`, `P4O2`: posterior EEG channels
+- `BFV2`: cerebral blood flow velocity
+- `Fs_EEG = 512 Hz`
+- `Fs_BFV = 0.5 Hz`
 
-The main analysis uses 2-second EEG epochs to build one power value per epoch for each band:
+The analysis converts EEG into one band-power value per 2-second epoch, producing slow power-variability signals that can be compared with `BFV2` on the same effective time scale.
+
+Bands analyzed:
 
 - `delta`: 0.5-4 Hz
 - `theta`: 4-8 Hz
 - `alpha`: 8-13 Hz
 - `beta`: 13-30 Hz
 
-For each epoch and band:
+## Analysis pipeline
 
-1. Welch PSD is computed inside the epoch.
-2. Band power is obtained by integrating the PSD over the band limits.
-3. The resulting band-power time series is compared with `BFV2` using magnitude-squared coherence.
-4. Coherence is summarized in the low-frequency range `0.02-0.15 Hz`.
+1. EEG channels are segmented into non-overlapping 2-second epochs.
+2. Welch PSD is estimated within each epoch.
+3. Band power is obtained by integrating the PSD over each frequency band.
+4. Epoch-wise band power values are assembled into slow power-variability time series.
+5. Magnitude-squared coherence is computed between each band-power variability signal and `BFV2`.
+6. Coherence is summarized over `0.02-0.15 Hz` using peak coherence, peak frequency, mean coherence, and area under the coherence curve.
 
 ## Control analysis
 
-The repository now exports two strategies:
+Two channel-selection strategies are exported:
 
-- `primary`: delta/theta/beta from `F4C4`, alpha from a posterior channel when available (`P3O1` preferred, then `P4O2`)
+- `primary`: delta, theta, and beta from `F4C4`; alpha from a posterior channel when available (`P3O1` preferred, then `P4O2`)
 - `same_channel_control`: all bands from `F4C4`
 
-This control does not make the analysis inferential, but it helps answer an important question honestly:
-
-Is an apparent advantage of alpha partly due to using a posterior channel rather than the band itself?
+The control analysis is included to make band comparisons easier to interpret when alpha is estimated from a different channel than the other bands.
 
 ## Repository structure
 
@@ -73,39 +77,30 @@ Open MATLAB in the repository root and run:
 main
 ```
 
-No manual `load(...)` step is required. The script reads `data/dataset09.mat`, saves figures to `figures/`, and writes CSV and MAT outputs to `results/`.
+The script loads `data/dataset09.mat`, runs the full analysis, saves figures to `figures/`, and writes tabular and MAT outputs to `results/`.
 
-## Execution status
+Tested locally with MATLAB `R2024b`.
 
-This refactored pipeline was batch-run successfully in this environment with MATLAB `R2024b Update 6` on April 22, 2026.
+## Outputs
 
-What was verified by execution:
+The repository exports:
 
-- MATLAB launches successfully.
-- `data/dataset09.mat` loads correctly.
-- the analysis runs end-to-end from `main.m`
-- figures are saved
-- CSV and MAT outputs are exported
-
-What is still only supported as interpretation, not proof:
-
-- whether any coherence pattern generalizes beyond this recording
-- whether the strongest band reflects physiology rather than recording-specific structure
-- whether coherence implies directional or causal coupling
+- example channel plots
+- band-power variability plots
+- coherence plots for the primary strategy
+- a strategy-comparison figure
+- CSV summaries for the primary and control analyses
+- a MAT file containing the full exported analysis state
 
 ## Scientific limits
 
 - This is a single-recording exploratory analysis, not a population study.
-- Coherence quantifies frequency-domain association, not causality.
-- The primary strategy uses different channels for different bands, so its ranking is a band-plus-channel comparison.
-- The same-channel control helps with interpretation but is not a full null model or statistical significance test.
+- Coherence measures frequency-domain association and should not be interpreted as causality.
+- The primary strategy mixes channel location with band selection, so it should be interpreted as a band-plus-channel comparison.
+- The same-channel control improves interpretability but is not a formal null model or significance test.
 
-## Why this is stronger for a CV now
+## Possible extensions
 
-The repository is more defensible because it demonstrates:
-
-- reproducible execution
-- cleaner MATLAB engineering
-- explicit output artifacts
-- a control analysis that addresses a real interpretation issue
-- honest scope without exaggerated novelty
+- Add a simple surrogate or permutation-based null analysis for coherence.
+- Compare additional same-channel and cross-channel strategies.
+- Apply the pipeline to multiple recordings if comparable datasets are available.
